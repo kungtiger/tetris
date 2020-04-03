@@ -12,7 +12,7 @@ Written in HTML, CSS and JavaScript using canvas and local storage.
 - Two random generators: shuffled sequences of all 7 blocks, or completely random
 - Next block preview
 - Highscore list
-- Mouse control via buttons
+- Use arrow keys on your keyboard or optionally buttons on screen
 - Two themes: flat and embossed
 
 ## Play
