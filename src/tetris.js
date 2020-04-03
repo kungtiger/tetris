@@ -47,16 +47,14 @@
             n = arguments[1];
             fn = arguments[2];
         }
-        var x, y, r;
+        var x, y;
         for (x = 0; x < m; x++) {
             for (y = 0; y < n; y++) {
-                r = fn(x, y);
-                if (r === false) {
-                    return false;
+                if (fn(x, y) === false) {
+                    return;
                 }
             }
         }
-        return true;
     };
 
     var width = 12, // width of the field including walls
@@ -230,8 +228,10 @@
     Game.move = function() {
         each({left: -1, right: 1}, function(f, cursor) {
             if (Keyboard.current == cursor) {
-                if (canMove === true || (canMove < 0 && blockCanFit(current, curX + f, curY, curTheta))) {
-                    curX += f;
+                if (canMove === true || canMove < 0) {
+                    if (blockCanFit(current, curX + f, curY, curTheta)) {
+                        curX += f;
+                    }
                 }
                 if (canMove === true) {
                     canMove = Settings.get('cursorDelay');
@@ -278,8 +278,11 @@
         }
 
         if (blockCanFit(current, curX, curY + 1, curTheta)) {
+            console.log('autodrop');
             curY += manualDrop ? 0 : 1;
             return;
+        }else{
+            console.log('lock');
         }
 
         // place the current tetrimino onto the field
@@ -354,15 +357,17 @@
     };
 
     var blockCanFit = function(type, x, y, theta) {
-        var i;
-        return matrix(type, function(_x, _y) {
-            if (y + _y >= 0 && x + _x < width && y + _y >= 0 && y + _y < height) {
-                i = (x + _x) + width * (y + _y);
-                if (hasBlock(type, _x, _y, theta) && State[i]) {
-                    return false;
-                }
+        var i, dx, dy, fits = true;
+        matrix(type, function(_x, _y) {
+            dx = x + _x, dy = y + _y;
+
+            i = dx + width * dy;
+            if (hasBlock(type, _x, _y, theta) && State[i]) {
+                fits = false;
+                return false;
             }
         });
+        return fits;
     };
 
     var isWall = function(x, y) {
@@ -415,7 +420,7 @@
             next = Bag.next();
             current = Bag.current();
         } else {
-            current = next;
+            current = next ? next : rand(1, 7);
             next = rand(1, 7);
         }
         curX = current == 4 ? 5 : 4;
