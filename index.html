@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tetris: Pure and Simple</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="tetris.css"/>
+    <script type="text/javascript" src="tetris.js"></script>
+  </head>
+  <body>
+    <main id="tetris">
+      <div id="toolbar">
+        <button id="play" type="button"></button>
+        <button id="pause" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="play">
+          <path d="M8 5v14l11-7z"/>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="pause">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+        <button id="show_highscores" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/>
+          </svg>
+        </button>
+        <button id="show_settings" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+          </svg>
+        </button>
+      </div>
+      <div id="status"></div>
+      <div id="details">
+        <div id="level"></div>
+        <div id="levelNum" class="bold"></div>
+        <div id="score"></div>
+        <div id="scoreNum" class="bold"></div>
+        <div id="lines"></div>
+        <div id="linesNum" class="bold"></div>
+        <div id="next"></div>
+        <canvas id="preview"></canvas>
+        <nav id="cursors" class="hidden">
+          <button id="left" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+          <button id="right" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+          </button>
+          <button id="up" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+            <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/>
+            </svg>
+          </button>
+          <button id="down" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+            </svg>
+          </button>
+        </nav>
+      </div>
+      <canvas id="field"></canvas>
+      <canvas id="blocks"></canvas>
+      <div id="settings" class="dialog">
+        <button id="close_settings" class="close" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+        <p class="field">
+          <label for="randomGenerator" id="randomGeneratorLabel"></label>
+          <select id="randomGenerator"></select>
+        </p>
+        <p class="field">
+          <input type="checkbox" id="showCursors" value="1"/>
+          <label for="showCursors" id="showCursorsLabel"></label>
+        </p>
+        <p class="field">
+          <label for="paintStyle" id="paintStyleLabel"></label>
+          <select id="paintStyle"></select>
+        </p>
+        <p class="field">
+          <label for="cursorDelay" id="cursorDelayLabel"></label>
+          <select id="cursorDelay"></select>
+        </p>
+      </div>
+      <div id="highscores" class="dialog">
+        <button id="close_highscores" class="close" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+        <pre id="highscoreList"></pre>
+      </div>
+    </main>
+    <canvas id="test" width="0" height="0"></canvas>
+  </body>
+</html>

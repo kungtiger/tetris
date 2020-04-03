@@ -1,0 +1,353 @@
+/* Normalization */
+
+html {
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+main {
+    display: block;
+}
+
+button {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+    overflow: visible;
+    text-transform: none;
+}
+
+button,
+[type="button"] {
+    -webkit-appearance: button;
+}
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner {
+    border-style: none;
+    padding: 0;
+}
+
+button:-moz-focusring,
+[type="button"]:-moz-focusring {
+    outline: 1px dotted ButtonText;
+}
+
+[hidden] {
+    display: none;
+}
+
+
+/* Tetris */
+
+$grid_width: 216px;
+$grid_height: 396px;
+$btn_width: 100px;
+$btn_height: 30px;
+$btn_gap: 8px;
+$control_size: 36px;
+$block_size: 18px;
+$padding: 20px;
+$details_width: 120px;
+$details_gap: 18px;
+$details_line: 28px;
+$grid_top: 2 * $padding + $btn_height;
+
+$main_fg: #eee;
+$main_bg: #000;
+$btn_bg: #202020;
+$embossed: lighten($btn_bg, 15%) darken($btn_bg, 10%) darken($btn_bg, 15%) lighten($btn_bg, 10%);
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $main_fg;
+    font-size: 15px;
+    font-family: Verdana, sans-serif;
+    background-color: #222;
+}
+
+#tetris {
+    position: relative;
+    width: $grid_width + 2 * $padding + $details_width + $details_gap;
+    height: $grid_height + 3 * $padding + $btn_height;
+    background-color: $main_bg;
+    * {
+        user-select: none;
+    }
+    .hidden {
+        display: none;
+    }
+}
+
+#tetris > *,
+#toolbar button, 
+#details > *,
+nav button {
+    position: absolute;
+}
+
+button {
+    width: $btn_width;
+    height: $btn_height;
+    border: none;
+    background-color: $btn_bg;
+    padding: 3px 7px;
+    font-size: 13px;
+    line-height: 22px;
+    vertical-align: middle;
+    outline: none;
+    color: $main_fg;
+    cursor: pointer;
+
+    &, svg {
+        transition: all .050s linear;
+    }
+    svg {
+        fill: $main_fg;
+    }
+
+    &:not(:disabled) {
+        &:hover, &:focus, &.hover, &.focus {
+            background-color: lighten($btn_bg, 5%);
+        }
+        &:active, &.active {
+            background-color: $btn_bg;
+        }
+    }
+    &:disabled, &.disabled {
+        opacity: .5;
+        cursor: default;
+
+        svg {
+            fill: #999;
+        }
+    }
+}
+
+#toolbar {
+    width: $grid_width + $details_width + $details_gap;
+    top: $padding;
+    left: $padding;
+}
+#pause {
+    left: $grid_width - $btn_width * .5;
+}
+#pause .pause {
+    display: none;
+}
+#tetris.game-paused {
+    #pause .play {
+        display: none;
+    }
+    #pause .pause {
+        display: inline;
+    }   
+}
+#pause, #show_highscores, #show_settings {
+    width: $btn_width * .5;
+    padding: 5px 0 0;
+}
+#show_highscores {
+    right: $btn_width * .5 + $btn_gap;
+}
+#show_settings {
+    right: 0;
+}
+
+#details {
+    right: $padding;
+    width: $details_width;
+    height: $grid_height;
+    div {
+        left: 20px;
+        line-height: 20px;
+        vertical-align: middle;
+    }
+    .bold {
+        color: $main_fg;
+        font-weight: 700;
+    }
+    $i: 0;
+    @each $line in level,score,lines {
+        ##{$line} {
+            top: $i * $details_line;
+        }
+        ##{$line}Num {
+            top: ($i + 1) * $details_line - 6px;
+        }
+        $i: $i + 2;
+    }
+    #next {
+        top: $i * $details_line;
+    }
+    #preview {
+        left: $padding;
+        top: ($i + 1) * $details_line;
+    }
+}
+
+#blocks, #details {
+    top: 2 * $padding + $btn_height;
+}
+#blocks, #field, #preview {
+    transition: opacity .200s linear;
+}
+#blocks, #field {
+    left: $padding;
+}
+#blocks, #field, #details {
+    top: $grid_top;
+}
+
+#tetris.game-paused, #tetris.game-over {
+    canvas {
+        opacity: .5;
+    }
+}
+
+#status {
+    display: none;
+    top: $grid_top + $grid_height * .4;
+    left: $padding;
+    z-index: 1;
+    width: $grid_width;
+    text-align: center;
+    font-size: 2em;
+}
+#tetris.game-over #status, #tetris.game-paused #status {
+    display: block;
+}
+
+nav {
+    left: 0;
+    bottom: 2 * $control_size + $btn_gap;
+    button {
+        width: $control_size;
+        height: $control_size; 
+        line-height: 20px; 
+        padding: 1px;
+        border-radius: 2px;
+    }
+}
+
+#left, #down, #right {
+    top: $control_size + $btn_gap;
+}
+#left {
+    left: 0;
+}
+#up, #down {
+    left: $control_size + $btn_gap;
+}
+#up {
+    top: 0;
+}
+#right {
+    left: 2 * $control_size + 2 * $btn_gap;
+}
+
+.dialog {
+    display: none;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 2 * $padding + $btn_height $padding $padding;
+    background-color: transparentize($main_bg, .35);
+    z-index: 2;
+
+    .close {
+        position: absolute;
+        top: $padding;
+        right: $padding;
+        width: $btn_width * .5;
+    }
+    &.shown {
+        display: block;
+    }
+}
+
+select {
+    margin-top: -1px;
+    padding: 4px 6px;
+    line-height: 22px;
+    font-size: 15px;
+    vertical-align: middle;
+    color: $main_fg;
+    border: 1px solid red;
+    border-color: $embossed;
+    background-color: $btn_bg;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+input[type="checkbox"] {
+    $size: 18px;
+
+    display: inline-block;
+    position: relative;
+    width: $size;
+    height: $size;
+    margin: 0 0 -4px 0;
+    padding: 0 !important;
+    border-radius: 4px;
+    border: 1px solid #eee;
+    background: #fff;
+    outline: 0;
+    cursor: pointer;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+
+    &:checked:before {
+        content: 'X';
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        height: inherit;
+        width: inherit;
+        color: #222;
+        font-size: 15px;
+        text-align: center;
+    }
+}
+
+#settings {
+    .field {
+        line-height: 20px;
+        vertical-align: middle;
+        margin: 0 0 3px;
+        padding: .5em;
+        background-color: #111;
+        label {
+            padding: 0 .5em 0 0;
+        }
+        input + label,
+        select + label {
+            padding: 0 0 0 .5em;
+        }
+    }
+}
+
+#highscoreList {
+    $line: 20px;
+    margin: 0;
+    height: 15 * $line;
+    background-color: #111;
+    line-height: $line;
+    font-size: 13px;
+}

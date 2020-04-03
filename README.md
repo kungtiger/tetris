@@ -1,2 +1,2 @@
-# tetris
-Tetris: Pure and Simple
+# Tetris
+Pure and Simple
