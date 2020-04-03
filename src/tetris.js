@@ -904,7 +904,7 @@
                 }
             },
             cursorDelay: {
-                default: 2,
+                default: 1,
                 init: function(el) {
                     for (var i = 1; i < 5; i++) {
                         var option = document.createElement('option');
